@@ -1,30 +1,35 @@
-import './App.css';
-import React, { useEffect, useState, useMemo } from 'react';
 import P from 'prop-types';
+import { useEffect, useMemo, useState, useRef } from 'react';
+import './App.css';
 
-const Posts = ({ post }) => {
+const Post = ({ post, handleClick }) => {
   console.log('Filho renderizou');
   return (
-    <div className="post" key={post.id}>
-      <h1>{post.title}</h1>
+    <div key={post.id} className="post">
+      <h1 style={{ fontSize: '14px' }} onClick={() => handleClick(post.title)}>
+        {post.title}
+      </h1>
       <p>{post.body}</p>
     </div>
   );
 };
 
-Posts.propTypes = {
+Post.propTypes = {
   post: P.shape({
     id: P.number,
     title: P.string,
     body: P.string,
   }),
+  handleClick: P.func,
 };
 
 function App() {
   const [posts, setPosts] = useState([]);
   const [value, setValue] = useState('');
+  const input = useRef(null);
+  const contador = useRef(0);
 
-  console.log('Pai renderizou');
+  console.log('Pai renderizou!');
 
   // Component did mount
   useEffect(() => {
@@ -33,10 +38,25 @@ function App() {
       .then((r) => setPosts(r));
   }, []);
 
+  useEffect(() => {
+    input.current.focus();
+    console.log(input.current);
+  }, [value]);
+
+  useEffect(() => {
+    contador.current++;
+  });
+
+  const handleClick = (value) => {
+    setValue(value);
+  };
+
   return (
     <div className="App">
+      <h6>Renderizou: {contador.current}x</h6>
       <p>
         <input
+          ref={input}
           type="search"
           value={value}
           onChange={(e) => setValue(e.target.value)}
@@ -45,10 +65,11 @@ function App() {
       {useMemo(() => {
         return (
           posts.length > 0 &&
-          posts.map((post) => <Posts key={post.id} post={post} />)
+          posts.map((post) => {
+            return <Post key={post.id} post={post} handleClick={handleClick} />;
+          })
         );
       }, [posts])}
-
       {posts.length <= 0 && <p>Ainda não existem posts.</p>}
     </div>
   );
