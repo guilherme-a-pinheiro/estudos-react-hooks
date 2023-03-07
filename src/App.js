@@ -1,47 +1,52 @@
-import './App.css';
-import React, { useReducer } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
-const globalState = {
-  title: 'O título do contexto',
-  body: 'O body do contexto',
-  counter: 0,
+const useMyHook = (cb, delay = 1000) => {
+  const savedCb = useRef();
+
+  useEffect(() => {
+    savedCb.current = cb;
+  }, [cb]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      savedCb.current();
+    }, delay);
+
+    return () => clearInterval(interval);
+  }, [delay]);
 };
 
-const reducer = (state, action) => {
-  switch (action.type) {
-    case 'muda':
-      console.log('Chamou muda com', action.payload);
-      return { ...state, title: action.payload };
-    case 'inverter': {
-      console.log('Chamou inverter');
-      const { title } = state;
-      return { ...state, title: title.split('').reverse().join('') };
-    }
-  }
-
-  return { ...state };
-};
-
+// App.jsx
 function App() {
-  const [state, dispatch] = useReducer(reducer, globalState);
-  const { counter, title, body } = state;
+  const [counter, setCounter] = useState(0);
+  const [delay, setDelay] = useState(1000);
+  const [incrementor, setIncrementor] = useState(100);
+
+  useMyHook(() => setCounter((c) => c + 1), delay);
 
   return (
     <div>
-      <h1>
-        {title} {counter}
-      </h1>
+      <h1>Contador: {counter}</h1>
+      <h1>Delay: {delay}</h1>
       <button
-        onClick={() =>
-          dispatch({
-            type: 'muda',
-            payload: new Date().toLocaleString('PT-BR'),
-          })
-        }
+        onClick={() => {
+          setDelay((d) => d + incrementor);
+        }}
       >
-        Click
+        +{incrementor}
       </button>
-      <button onClick={() => dispatch({ type: 'inverter' })}>Inverter</button>
+      <button
+        onClick={() => {
+          setDelay((d) => d - incrementor);
+        }}
+      >
+        -{incrementor}
+      </button>
+      <input
+        type="number"
+        value={incrementor}
+        onChange={(e) => setIncrementor(Number(e.target.value))}
+      />
     </div>
   );
 }

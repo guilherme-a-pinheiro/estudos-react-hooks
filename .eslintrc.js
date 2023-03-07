@@ -32,5 +32,6 @@ module.exports = {
   rules: {
     'react/react-in-jsx-scope': 'off',
     'no-unused-vars': 'off',
+    'react-hooks/exhaustive-deps': 'off',
   },
 };
