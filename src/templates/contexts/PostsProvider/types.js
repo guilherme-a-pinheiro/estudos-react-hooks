@@ -1,4 +1,3 @@
 // Tipos das actions
-
-const POSTS_LOADING = 'POSTS_LOADING';
-const POSTS_SUCCESS = 'POSTS_SUCCESS';
+export const POSTS_LOADING = 'POSTS_LOADING';
+export const POSTS_SUCCESS = 'POSTS_SUCCESS';

@@ -1,11 +1,18 @@
-import React from 'react';
 import './styles.css';
+
+import { PostsProvider } from '../contexts/PostsProvider';
+import { Posts } from '../components/Posts';
+import { CounterProvider } from '../contexts/CounterProvider';
 
 function App() {
   return (
-    <div>
-      <h1>Oi</h1>
-    </div>
+    <CounterProvider>
+      <PostsProvider>
+        <div>
+          <Posts />
+        </div>
+      </PostsProvider>
+    </CounterProvider>
   );
 }
 

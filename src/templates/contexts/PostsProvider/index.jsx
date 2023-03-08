@@ -5,10 +5,14 @@ import { data } from './data';
 import { reducer } from './reducer';
 
 export const PostsProvider = ({ children }) => {
-  const [postState, postDispatch] = useReducer(reducer, data);
+  const [postsState, postsDispatch] = useReducer(reducer, data);
 
-  return <PostsContext.Provider>{children}</PostsContext.Provider>
-}
+  return (
+    <PostsContext.Provider value={{ postsState, postsDispatch }}>
+      {children}
+    </PostsContext.Provider>
+  );
+};
 
 PostsProvider.propTypes = {
   children: P.node.isRequired,
